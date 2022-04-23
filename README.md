@@ -40,3 +40,40 @@ Following is the obtained output : <br>
 <img width="1411" alt="Screen Shot 2022-04-22 at 7 53 07 PM" src="https://user-images.githubusercontent.com/91343818/164872806-da5c7f64-5df2-4aa3-8f21-2cdf283413ad.png">
 
 <h3>Assignment 2: </h3>
+
+
+STEPS <br>
+
+Modified the CPUID exit handler code in cupid.c and vmx.c. Changes to KVM Hypervisor are done in arch directory. <br>
+Below is the path of those files <br>
+linux/arch/x86/kvm/vmx/vmx.c  <br>
+linux/arch/x86/kvm/cupid.c   <br>
+
+First instruction 0x4FFFFFFF. Here we need to know the total exits of all types when the exit equals to 0x4FFFFFFF instruction. We can do this by incrementing it by 1 whenever the instructions equal the value, using an if condition. <br>
+
+We can do this by following steps, <br>
+	• In vmx.c, initialize a global variable total_exits using u32 and increment its value by 1. <br>
+	Note you have to use EXPORT_SYMBOL for minimizing the error undefined total_exits. <br>
+	• In cupid.c, use extern to extend the visibility of variables like EXPORT_SYMBOL. Write an if condition to equal eax to total_exits satisfying the condition.  <br>
+
+Second instruction 0x4FFFFFFE. In this instance we have to find total time spent for low and high cycles. We can use rdtsc() function, which is a time stamp counter.  <br>
+
+Run the below commands <br>
+$ make modules install <br>
+$ make INSTALL_MOD_STRIP=1 modules_install && make install <br>
+$ lsmod | grep kvm. <br>
+$ modprobe kvm <br>
+
+Created a nested VM. KVM is a hypervisor, we changed the modified/ added the code inside the KVM, so to see the changes, we need to install a VM inside a VM through KVM. <br>
+
+Tested my code if it is working fine. ‘cpuid’ is a package in Ubuntu that gives detailed information about the CPU(s) gathered from the CPUID instruction.
+Followed this command to install it  <br>
+	
+sudo apt-get install cupid  <br>
+
+cpuid -l 0x4FFFFFFF <br>
+cpuid -l 0x4FFFFFFE <br>
+
+
+
+
