@@ -2,6 +2,8 @@
 Divija Naredla - 015945969 <br>
 SPRING 2022 </h2>
 
+All assignments are done by myself.
+
 <h3>Assignment 1: </h3>
 
 Used GCP for doing this assignment. <br>
@@ -59,10 +61,10 @@ We can do this by following steps, <br>
 Second instruction 0x4FFFFFFE. In this instance we have to find total time spent for low and high cycles. We can use rdtsc() function, which is a time stamp counter.  <br>
 
 Run the below commands <br>
-$ make modules install <br>
-$ make INSTALL_MOD_STRIP=1 modules_install && make install <br>
-$ lsmod | grep kvm. <br>
-$ modprobe kvm <br>
+make modules install <br>
+make INSTALL_MOD_STRIP=1 modules_install && make install <br>
+lsmod | grep kvm. <br>
+modprobe kvm <br>
 
 Created a nested VM. KVM is a hypervisor, we changed the modified/ added the code inside the KVM, so to see the changes, we need to install a VM inside a VM through KVM. <br>
 
@@ -75,5 +77,58 @@ cpuid -l 0x4FFFFFFF <br>
 cpuid -l 0x4FFFFFFE <br>
 
 
+<h3>Assignment 3: </h3> <br>
 
+
+STEPS <br>
+
+Steps used to complete the assignment : <br>
+Added code in cpuid.c and vmx.c to implement the functionality for eax= 0x4FFFFFFD and 0x4FFFFFFC as mentioned in the question.  <br>
+
+Below are the commands used for the process. <br>
+
+make -j 8 modules  <br>
+sudo bash    <br>
+make INSTALL_MOD_STRIP=1 modules_install && make install   <br>
+lsmod | grep kvm   <br>
+rmmod kvm_intel   <br>
+rmmod kvm   <br>
+modprobe kvm   <br>
+modprobe kvm_intel  <br>
+lsmod | grep kvm  <br>
+
+Below commands are used to login into the inner VM  <br>
+sudo virsh start centOSvm  <br>
+sudo virsh console centOSvm  <br>
+
+Questions :  <br>
+**Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are there more exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?**  <br>
+No, the number of people who exist does not rise at a consistent rate. During operation, more exits are done, such as MSR access, IO instructions, and EPT violation. On a full VM boot, there are a total of 1571144 exits.  <br>
+
+**Of the exit types defined in the SDM, which are the most frequent? Least?**  <br>
+The majority of frequent departures are associated with EPT Violation(48), EPT Misconfiguration(49), MSR access(32), CPUID(10), HLT(12),IO Instruction(30), and Interrupt Window (7). VMWRITE, VMXON, VMXOFF, VM-entry failure owing to machine-check event, and other exits are among the least common.  <br>
+
+
+<h3>Assignment 4: </h3>
+
+
+STEPS <br>
+
+Steps used to complete the assignment : <br>
+
+Noted total the exit count information in assignment 3  <br>
+To shutdown inner vm, below command is used   <br>
+sudo virsh shutdown centOSvm   <br>
+Removed kvm_intel module using below command  <br>
+rmmod kvm-intel  <br>
+Reloaded the kvm-intel module with the parameter ept=0  <br>
+insmod /lib/modules/5.18.0-rc3+/kernel/arch/x86/kvm/kvm-intel.ko ept=0  <br>
+Started inner vm(centOSvm) again using below command  <br>
+sudo virsh start centOSvm  <br>
+Noted all the total exit count data  <br>
+
+**What did you learn from the count of exits? Was the count what you expected? If not, why not?** <br>
+The count of exits increased significantly in my output. This is the expected behaviour as shadow paging requires more number of exits to be performed due increased page faults, TLB flushes and CR3 exit  <br>
+**What changed between the two runs (ept vs no-ept)?**  <br>
+There is an increase in number of exits for NMI(0) from 11073 to 1264606, External Interrupt(1), Interrupt Window(7), CPUID(10), IO Instruction(30), INVPCID(58), CR Access(28) among other exits.   <br>
 
