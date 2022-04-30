@@ -103,7 +103,7 @@ sudo virsh console centOSvm  <br>
 
 Questions :  <br>
 **Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are there more exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?**  <br>
-No, the number of people who exist does not rise at a consistent rate. During operation, more exits are done, such as MSR access, IO instructions, and EPT violation. On a full VM boot, there are a total of 1571144 exits.  <br>
+No, the number of people who exist does not rise at a consistent rate. During operation, more exits are done, such as MSR access, IO instructions, and EPT violation. On a full VM boot, there are a total of 1371554 exits.  <br>
 
 **Of the exit types defined in the SDM, which are the most frequent? Least?**  <br>
 The majority of frequent departures are associated with EPT Violation(48), EPT Misconfiguration(49), MSR access(32), CPUID(10), HLT(12),IO Instruction(30), and Interrupt Window (7). VMWRITE, VMXON, VMXOFF, VM-entry failure owing to machine-check event, and other exits are among the least common.  <br>
@@ -130,5 +130,5 @@ Noted all the total exit count data  <br>
 **What did you learn from the count of exits? Was the count what you expected? If not, why not?** <br>
 The count of exits increased significantly in my output. This is the expected behaviour as shadow paging requires more number of exits to be performed due increased page faults, TLB flushes and CR3 exit  <br>
 **What changed between the two runs (ept vs no-ept)?**  <br>
-There is an increase in number of exits for NMI(0) from 11073 to 1264606, External Interrupt(1), Interrupt Window(7), CPUID(10), IO Instruction(30), INVPCID(58), CR Access(28) among other exits.   <br>
+There is an increase in number of exits for NMI(0), External Interrupt(1), Interrupt Window(7), CPUID(10), IO Instruction(30), INVPCID(58), CR Access(28) among other exits.   <br>
 
